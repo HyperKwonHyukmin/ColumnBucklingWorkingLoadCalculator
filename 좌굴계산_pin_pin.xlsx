@@ -1,0 +1,48 @@
+Input										
+	0) 사용하중 안전율	3									
+											
+	1) 부재선택	300A PIPE									
+											
+	* 약축 기준, c_y는 I.A만 값 표기										
+	단면적 A [mm^2]	관성모멘트 I [mm^4]	회전반경 r [mm]	단면계수 Z [mm^3]	B or 내경 [mm]	c_y(도심) [mm]					
+	=VLOOKUP(C5,'부재 치수'!B4:M96,4,FALSE)	=VLOOKUP(C5,'부재 치수'!B4:M96,6,FALSE)	=VLOOKUP(C5,'부재 치수'!B4:M96,8,FALSE)	=VLOOKUP(C5,'부재 치수'!B4:M96,10,FALSE)	=VLOOKUP(C5,'부재 치수'!B4:M96,3,FALSE)	=VLOOKUP(C5,'부재 치수'!B4:M96,12,FALSE)					
+											
+	재질										
+	탄성계수[MPa]	항복응력[MPa]									
+	210000	240									
+											
+	2) 기둥 길이 입력	4470	mm								
+											
+	3) 편심 기준 입력	0.25		*기준거리의	0	(중심에 하중 작용, e=0)					
+					0.1						
+	* 편심 기준거리	=IF(ISNUMBER(SEARCH(".",C5)),F9-G9,F9/2)	mm		0.15						
+	H단면	B/2			0.2						
+	Pipe 단면	내경/2			0.25						
+	I.A 단면	B - c_y(도심)			0.3						
+					0.35						
+	편심량, e	=C17*C19	mm								
+											
+											
+	Results										
+	4-1) 편심이 없을 경우 (e=0)										
+							Ag	: Gross sectional area			
+	KL/r (K=1)	=C15/D9					Fy	: Yield stress			
+	Fe 	=PI()^2*B13*C9/C15^2/B9	MPa	(오일러식 기반 --> 탄성 좌굴임계 응력)			Fe	: Elastic critical buckling stress			(탄성 좌굴임계 응력)
+	Fcr	=IF(C15/D9<=4.71*SQRT(B13/C13),0.658^(C13/C31)*C13,0.877*C31)	MPa	(AISC 기반 --> 비탄성 좌굴임계 응력)			Fcr	: Flexural buckling stress			(비탄성 좌굴임계 응력)
+											
+	사용하중	=IF(C24<>0,"None",C32*B9/9810/C3)	ton								
+											
+											
+	4-2) 편심이 있을 경우										
+											
+		비탄성 좌굴임계 하중, P[N]	simga_max	Remark	사용하중 [ton]	=MAX(F40:F49)					
+	Fcr의 100%	=$C$32*$B$9	=C40/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C40/($B$9*$B$13))))	=IF(D40>$C$13,"Not OK","OK")	=IF(E40="Not OK","",C40/9810/$C$3)						
+	Fcr의 90%	=$C$32*$B$9*90%	=C41/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C41/($B$9*$B$13))))	=IF(D41>$C$13,"Not OK","OK")	=IF(E41="Not OK","",C41/9810/$C$3)						
+	Fcr의 80%	=$C$32*$B$9*80%	=C42/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C42/($B$9*$B$13))))	=IF(D42>$C$13,"Not OK","OK")	=IF(E42="Not OK","",C42/9810/$C$3)						
+	Fcr의 70%	=$C$32*$B$9*70%	=C43/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C43/($B$9*$B$13))))	=IF(D43>$C$13,"Not OK","OK")	=IF(E43="Not OK","",C43/9810/$C$3)						
+	Fcr의 60%	=$C$32*$B$9*60%	=C44/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C44/($B$9*$B$13))))	=IF(D44>$C$13,"Not OK","OK")	=IF(E44="Not OK","",C44/9810/$C$3)						
+	Fcr의 50%	=$C$32*$B$9*50%	=C45/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C45/($B$9*$B$13))))	=IF(D45>$C$13,"Not OK","OK")	=IF(E45="Not OK","",C45/9810/$C$3)						
+	Fcr의 40%	=$C$32*$B$9*40%	=C46/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C46/($B$9*$B$13))))	=IF(D46>$C$13,"Not OK","OK")	=IF(E46="Not OK","",C46/9810/$C$3)						
+	Fcr의 30%	=$C$32*$B$9*30%	=C47/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C47/($B$9*$B$13))))	=IF(D47>$C$13,"Not OK","OK")	=IF(E47="Not OK","",C47/9810/$C$3)						
+	Fcr의 20%	=$C$32*$B$9*20%	=C48/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C48/($B$9*$B$13))))	=IF(D48>$C$13,"Not OK","OK")	=IF(E48="Not OK","",C48/9810/$C$3)						
+	Fcr의 10%	=$C$32*$B$9*10%	=C49/$B$9*(1+$B$9*$C$24/$E$9*SEC($C$15/(2*$D$9)*SQRT(C49/($B$9*$B$13))))	=IF(D49>$C$13,"Not OK","OK")	=IF(E49="Not OK","",C49/9810/$C$3)
