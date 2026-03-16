@@ -10,7 +10,7 @@
             <h1>기둥 좌굴 허용 하중 계산 (AISC)</h1>
             <p>기둥의 제원 및 하중 조건을 입력하여 안전 사용 하중을 계산하세요.</p>
 
-            <form id="fileImportForm" action="/buckling/calculate" method="POST">
+            <form id="fileImportForm" action="/buckling/columnbuckling" method="POST">
 
                 <div class="input-group">
                     <label for="safetyFactor">0) 사용하중 안전율 <span style="color: red">*</span></label>
@@ -27,9 +27,9 @@
                             <option value="H300x300">H300x300</option>
                             <option value="H300x305">H300x305</option>
                         </optgroup>
-                        <optgroup label="Pipe 단면">
+                       <optgroup label="Pipe 단면">
                             <option value="150A PIPE (#40)">150A PIPE (#40)</option>
-                            <option value="150A PIPE (#60)">150A PIPE (#60){% if calculated %}/option>
+                            <option value="150A PIPE (#60)">150A PIPE (#60)</option>
                             <option value="200A PIPE (#40)">200A PIPE (#40)</option>
                             <option value="200A PIPE (#60)">200A PIPE (#60)</option>
                             <option value="250A PIPE (#40)">250A PIPE (#40)</option>
