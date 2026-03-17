@@ -47,8 +47,9 @@ namespace ColumnBucklingApp.Services
         // 편심이 있을 경우 (Secant Formula 적용)
         double maxWorkingLoad = 0;
 
-        // 엑셀의 100% ~ 10% 하드코딩(10줄)을 for문 하나로 우아하게 대체
-        for (double ratio = 1.0; ratio >= 0.1; ratio -= 0.1)
+        // [기존 10% 단위에서 0.5% 단위로 정밀도 20배 향상]
+        // ratio를 100%(1.0)부터 0.1%(0.001)까지 0.5%(0.001)씩 깎아내리며 검사합니다.
+        for (double ratio = 1.0; ratio >= 0.001; ratio -= 0.001)
         {
           double P = Fcr * m.Area * ratio; // 비탄성 좌굴임계 하중
 
@@ -62,8 +63,12 @@ namespace ColumnBucklingApp.Services
           // 항복응력(Fy) 이내인지 검증 ("OK" 조건)
           if (sigmaMax <= input.YieldStress)
           {
-            double workingLoad = P / GravityForce / input.SafetyFactor;
-            maxWorkingLoad = Math.Max(maxWorkingLoad, workingLoad);
+            // 위에서부터(100%) 하중을 내리며 확인했으므로, 
+            // 처음으로 조건을 만족하는 이 순간의 하중이 '최대 허용 하중'입니다.
+            maxWorkingLoad = P / GravityForce / input.SafetyFactor;
+
+            // 값을 찾았으므로 더 이상 불필요한 계산을 하지 않고 즉시 반복문을 탈출합니다 (연산 최적화).
+            break;
           }
         }
 
