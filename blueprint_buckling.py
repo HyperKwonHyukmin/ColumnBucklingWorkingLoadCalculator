@@ -62,6 +62,8 @@ def buckling_calculate():
             elastic_match = re.search(r'- 탄성계수\(E\)\s*:\s*([0-9\.]+)', output)
             yield_match = re.search(r'- 항복응력\(Fy\)\s*:\s*([0-9\.]+)', output)
             load_match = re.search(r'=> 최대 허용 사용하중\s*:\s*([0-9\.]+)', output)
+            ecc_match = re.search(r'- 편심 비율\(%\)\s*:\s*([0-9\.]+)', output)
+            load_match = re.search(r'=> 최대 허용 사용하중\s*:\s*([0-9\.]+)', output)
 
             # 5. C#이 성공적으로 하중 결과값을 뱉었을 경우
             if load_match:
@@ -71,6 +73,7 @@ def buckling_calculate():
                 member_modulus = modulus_match.group(1) if modulus_match else "-"
                 member_elastic = elastic_match.group(1) if elastic_match else "-"
                 member_yield = yield_match.group(1) if yield_match else "-"
+                member_eccentricity = ecc_match.group(1) if ecc_match else eccentricity
                 safe_load = load_match.group(1)
 
                 thread = threading.Thread(
@@ -90,6 +93,7 @@ def buckling_calculate():
                     member_elastic=member_elastic,
                     member_yield=member_yield,
                     member_length=length,
+                    member_eccentricity=member_eccentricity,
                     safe_load=safe_load
                 )
             else:
