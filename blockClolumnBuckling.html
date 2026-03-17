@@ -5,19 +5,20 @@
     {% include "sideMenu.html" %}
 
     <div class="fileImport">
-        <div class="fileImportContainer" style="height: auto; min-height: 600px; padding-bottom: 50px;">
-            <a href="#none" onclick="openModal();">프로그램 사용 가이드</a>
-            <h1>기둥 좌굴 허용 하중 계산 (AISC)</h1>
-            <p>기둥의 제원 및 하중 조건을 입력하여 안전 사용 하중을 계산하세요.</p>
+        <div class="fileImportContainer" style="height: auto; min-height: 600px; padding: 60px 50px 40px 50px; margin-top: 50px; margin-bottom: 50px;">
+
+            <a href="#none" onclick="openModal();" style="position: absolute; top: 25px; right: 25px;">프로그램 사용 가이드</a>
+
+            <h1 style="font-size: 1.8em; color: #002b5c; margin-top: 40px; margin-bottom: 10px; border: none;">기둥 좌굴 허용 하중 계산 (AISC)</h1>
+            <p style="margin-bottom: 35px; color: #666;">기둥의 제원 및 하중 조건을 입력하여 안전 사용 하중을 계산하세요.</p>
 
             <form id="fileImportForm" action="/buckling/columnbuckling" method="POST">
-
                 <div class="input-group">
                     <label for="safetyFactor">0) 사용하중 안전율 <span style="color: red">*</span></label>
                     <input type="number" id="safetyFactor" name="safetyFactor" step="0.1" value="3.0" required>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" style="margin-top: 15px;">
                     <label for="memberSelect">1) 부재 선택 <span style="color: red">*</span></label>
                     <select id="memberSelect" name="memberSelect" required>
                         <optgroup label="H-형 단면">
@@ -27,7 +28,7 @@
                             <option value="H300x300">H300x300</option>
                             <option value="H300x305">H300x305</option>
                         </optgroup>
-                       <optgroup label="Pipe 단면">
+                        <optgroup label="Pipe 단면">
                             <option value="150A PIPE (#40)">150A PIPE (#40)</option>
                             <option value="150A PIPE (#60)">150A PIPE (#60)</option>
                             <option value="200A PIPE (#40)">200A PIPE (#40)</option>
@@ -51,50 +52,65 @@
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" style="margin-top: 15px;">
                     <label for="material">재질 <span style="color: red">*</span></label>
                     <select id="material" name="material">
-                        <option value="MildSteel">Mild Steel (E: 210000 MPa, Fy: 240 MPa)</option>
+                        <option value="MildSteel">Mild Steel (E: 210,000 MPa, Fy: 240 MPa)</option>
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" style="margin-top: 15px;">
                     <label for="length">2) 기둥 길이 입력 [mm] <span style="color: red">*</span></label>
                     <input type="number" id="length" name="length" step="1" value="4470" required>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" style="margin-top: 15px;">
                     <label for="eccentricity">3) 편심 기준 입력 (중심 하중 시 0) <span style="color: red">*</span></label>
                     <input type="number" id="eccentricity" name="eccentricity" step="0.01" value="0.25" required>
                 </div>
 
-                <button type="submit">계산 실행 (C# 엔진 호출)</button>
+                <button type="submit" style="margin-top: 35px;">계산 실행</button>
             </form>
 
             {% if calculated %}
-            <div class="result-box"
-                 style="margin-top: 30px; padding: 25px; border: 1px solid #00d4ff; border-radius: 8px; background-color: #f8fbff; text-align: left; box-shadow: inset 0 0 5px rgba(0,212,255,0.1);">
-                <h3 style="margin-bottom: 15px; color: #002b5c; border-bottom: 2px solid #00d4ff; padding-bottom: 8px;">
-                    📊 계산 결과 및 제원 요약</h3>
+            <div class="result-report" style="margin-top: 50px; border: 1px solid #dee2e6; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: left;">
+                <div style="background: #002b5c; color: #fff; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 1.1em; font-family: 'Noto Sans KR';">📊 해석 결과 리포트</h3>
+                    <span style="font-size: 0.85em; opacity: 0.8;">AISC Standard Based</span>
+                </div>
 
-                <ul style="list-style: none; padding-left: 0; line-height: 2.0; color: #333; font-family: 'Noto Sans KR', sans-serif;">
-                    <li><strong>선택된 부재:</strong> {{ member_name }}</li>
-                    <li><strong>단면적 (A):</strong> {{ member_area }} mm²</li>
-                    <li><strong>관성모멘트 (I):</strong> {{ member_inertia }} mm⁴</li>
-                    <li><strong>회전반경 (r):</strong> {{ member_radius }} mm</li>
-                    <li><strong>단면계수 (Z):</strong> {{ member_modulus }} mm³</li>
-                    <li><strong>탄성계수 (E):</strong> {{ member_elastic }} MPa</li>
-                    <li><strong>항복응력 (Fy):</strong> {{ member_yield }} MPa</li>
-                    <li><strong>기둥 길이 (L):</strong> {{ member_length }} mm</li>
-                </ul>
+                <div style="padding: 30px;">
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 25px; text-align: center; border: 1px solid #e9ecef; margin-bottom: 30px;">
+                        <p style="margin: 0; color: #6c757d; font-weight: 500; font-size: 14px;">최종 안전 사용 하중</p>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 2.8em; font-weight: 700; color: #28a745;">{{ safe_load }}</span>
+                            <span style="font-size: 1.2em; font-weight: 600; color: #28a745; margin-left: 5px;">tonf</span>
+                        </div>
+                    </div>
 
-                <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                    <span style="font-size: 15px; color: #6c757d;">최종 안전 사용 하중</span><br>
-                    <strong style="font-size: 30px; color: #28a745;">{{ safe_load }} tonf</strong>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                        <div>
+                            <p style="border-bottom: 2px solid #00d4ff; padding-bottom: 8px; font-weight: 700; color: #002b5c; margin-bottom: 12px; font-size: 15px;">Section Properties</p>
+                            <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">선택 부재</td><td style="text-align: right; font-weight: 600; color: #002b5c;">{{ member_name }}</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">단면적 (A)</td><td style="text-align: right; font-weight: 600;">{{ member_area }} mm²</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">관성모멘트 (I)</td><td style="text-align: right; font-weight: 600;">{{ member_inertia }} mm⁴</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">회전반경 (r)</td><td style="text-align: right; font-weight: 600;">{{ member_radius }} mm</td></tr>
+                            </table>
+                        </div>
+                        <div>
+                            <p style="border-bottom: 2px solid #00d4ff; padding-bottom: 8px; font-weight: 700; color: #002b5c; margin-bottom: 12px; font-size: 15px;">Design Condition</p>
+                            <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">기둥 길이 (L)</td><td style="text-align: right; font-weight: 600;">{{ member_length }} mm</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">단면계수 (Z)</td><td style="text-align: right; font-weight: 600;">{{ member_modulus }} mm³</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">탄성계수 (E)</td><td style="text-align: right; font-weight: 600;">{{ member_elastic }} MPa</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #666;">항복응력 (Fy)</td><td style="text-align: right; font-weight: 600;">{{ member_yield }} MPa</td></tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endif %}
-
         </div>
     </div>
 </main>
@@ -104,71 +120,66 @@
     <div class="modal-content">
         <a href="#none" class="btn-close" onclick="closeModal();">×</a>
         <div class="modal-body">
-            <h2 id="modalTitle">좌굴 계산기 사용 가이드</h2>
-            <p>1. <strong>부재 선택</strong>: 드롭다운 메뉴에서 원하시는 규격의 형강을 선택하세요.</p>
-            <p>2. <strong>기둥 길이 및 편심</strong>: 실제 하중이 가해지는 환경에 맞게 mm 단위와 비율을 기입하세요.</p>
-            <p>3. <strong>계산 실행</strong>: 버튼을 누르면 서버의 C# 해석 엔진이 구동되어 결과를 반환합니다.</p>
-            <a class="modal_close" href="#none" onclick="closeModal();"
-               style="display: inline-block; margin-top: 20px;">창 닫기</a>
+            <h2 id="modalTitle" style="font-family: 'Noto Sans KR';">좌굴 계산기 사용 가이드</h2>
+            <p>1. <strong>부재 선택</strong>: 표준 규격 목록에서 원하는 부재를 선택합니다.</p>
+            <p>2. <strong>조건 입력</strong>: 안전율, 기둥 길이, 편심 비율을 정확히 입력하세요.</p>
+            <p>3. <strong>결과 확인</strong>: 계산 버튼을 누르면 AISC 기준에 따른 허용 하중 리포트가 생성됩니다.</p>
+            <a class="modal_close" href="#none" onclick="closeModal();" style="display: inline-block; margin-top: 15px;">창 닫기</a>
         </div>
     </div>
 </div>
 
 <script>
-    // 모달 제어 스크립트
     document.addEventListener('DOMContentLoaded', function () {
-      const modal = document.getElementById('modal-notice');
-      const backdrop = document.getElementById('modal-backdrop');
+        const modal = document.getElementById('modal-notice');
+        const backdrop = document.getElementById('modal-backdrop');
 
-      function openModal() {
-        if (!modal || !backdrop) return;
-        modal.classList.add('active');
-        backdrop.classList.add('active');
-      }
+        window.openModal = function() {
+            if (modal && backdrop) {
+                modal.classList.add('active');
+                backdrop.classList.add('active');
+            }
+        };
 
-      function closeModal() {
-        if (!modal || !backdrop) return;
-        modal.classList.remove('active');
-        backdrop.classList.remove('active');
-      }
+        window.closeModal = function() {
+            if (modal && backdrop) {
+                modal.classList.remove('active');
+                backdrop.classList.remove('active');
+            }
+        };
 
-      backdrop.addEventListener('click', closeModal);
-      window.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
-      });
+        if (backdrop) backdrop.addEventListener('click', closeModal);
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-      window.openModal = openModal;
-      window.closeModal = closeModal;
-    });
+        // 사이드바 제어 로직 (기존 style.css와 연동)
+        const menuButtons = document.querySelectorAll('.sidebar ul > li > a[role="button"]');
+        menuButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                const parentLi = this.parentElement;
+                const submenuId = this.getAttribute('aria-controls');
+                const submenu = document.getElementById(submenuId);
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
 
-    // 사이드바 제어 스크립트
-    document.addEventListener('DOMContentLoaded', function () {
-      const menuButtons = document.querySelectorAll('.sidebar ul > li > a[role="button"]');
+                document.querySelectorAll('.sidebar ul > li').forEach(li => {
+                    li.classList.remove('open');
+                    const link = li.querySelector('a[role="button"]');
+                    if(link) link.setAttribute('aria-expanded', 'false');
+                    const ul = document.getElementById(link?.getAttribute('aria-controls'));
+                    if(ul) ul.setAttribute('aria-hidden', 'true');
+                });
 
-      menuButtons.forEach(button => {
-        button.addEventListener('click', function (event) {
-          event.preventDefault();
-          const parentLi = this.parentElement;
-          const submenuId = this.getAttribute('aria-controls');
-          const submenu = document.getElementById(submenuId);
-          const isExpanded = this.getAttribute('aria-expanded') === 'true';
-
-          document.querySelectorAll('.sidebar ul > li').forEach(li => {
-            li.classList.remove('open');
-            const link = li.querySelector('a[role="button"]');
-            const targetId = link.getAttribute('aria-controls');
-            const ul = document.getElementById(targetId);
-            link.setAttribute('aria-expanded', 'false');
-            if (ul) ul.setAttribute('aria-hidden', 'true');
-          });
-
-          if (!isExpanded) {
-            parentLi.classList.add('open');
-            this.setAttribute('aria-expanded', 'true');
-            if (submenu) submenu.setAttribute('aria-hidden', 'false');
-          }
+                if (!isExpanded) {
+                    parentLi.classList.add('open');
+                    this.setAttribute('aria-expanded', 'true');
+                    if (submenu) submenu.setAttribute('aria-hidden', 'false');
+                }
+            });
         });
-      });
+
+        // Buckling 메뉴 자동 확장
+        const bucklingLink = document.querySelector('a[aria-controls="submenu-buckling"]');
+        if (bucklingLink) bucklingLink.click();
     });
 </script>
 {% endblock %}
